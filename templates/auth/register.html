@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-box">
+
+    <div class="auth-logo"><i class="fa-solid fa-trophy"></i></div>
+    <h1 class="auth-heading">Create account</h1>
+    <p class="auth-sub">Start earning rewards today</p>
+
+    <a href="{{ url_for('auth.discord_login') }}" class="btn-discord">
+      <svg width="20" height="20" viewBox="0 0 71 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.7a40 40 0 0 0-1.8 3.7 16.9 16.9 0 0
+                 0-2.4-.2c-3.2 0-6.4.4-9.5 1.2A40.7 40.7 0 0 0 10.2 4.9C3.7 14.5.5 23.8.5
+                 32.9c0 .1 0 .2.1.3a58.7 58.7 0 0 0 17.8 9c1.4-1.9 2.7-4 3.8-6.2a38.3 38.3
+                 0 0 1-6-2.9l1.4-1.1a42 42 0 0 0 36.2 0l1.4 1.1a38.5 38.5 0 0 1-6
+                 2.9c1.1 2.2 2.4 4.3 3.8 6.2a58.6 58.6 0 0 0 17.8-9c.1-.1.1-.2.1-.3
+                 0-9.1-3.2-18.4-9.8-28ZM23.8 27.7c-2.9 0-5.3-2.7-5.3-6s2.3-6 5.3-6 5.4
+                 2.7 5.3 6-2.3 6-5.3 6Zm23.4 0c-2.9 0-5.3-2.7-5.3-6s2.3-6 5.3-6 5.4
+                 2.7 5.3 6-2.3 6-5.3 6Z" fill="#fff"/>
+      </svg>
+      Sign up with Discord
+    </a>
+
+    <div class="or-divider"><span>or register with email</span></div>
+
+    <form method="POST" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="field">
+        {{ form.username.label }}
+        {{ form.username(class='input', placeholder='Choose a username') }}
+        {% for e in form.username.errors %}
+          <p class="field-error"><i class="fa-solid fa-circle-exclamation"></i> {{ e }}</p>
+        {% endfor %}
+      </div>
+      <div class="field">
+        {{ form.email.label }}
+        {{ form.email(class='input', placeholder='you@example.com') }}
+        {% for e in form.email.errors %}
+          <p class="field-error"><i class="fa-solid fa-circle-exclamation"></i> {{ e }}</p>
+        {% endfor %}
+      </div>
+      <div class="field">
+        {{ form.password.label }}
+        {{ form.password(class='input', placeholder='At least 6 characters') }}
+        {% for e in form.password.errors %}
+          <p class="field-error"><i class="fa-solid fa-circle-exclamation"></i> {{ e }}</p>
+        {% endfor %}
+      </div>
+      <div class="field">
+        {{ form.confirm.label }}
+        {{ form.confirm(class='input', placeholder='Repeat password') }}
+        {% for e in form.confirm.errors %}
+          <p class="field-error"><i class="fa-solid fa-circle-exclamation"></i> {{ e }}</p>
+        {% endfor %}
+      </div>
+      {{ form.submit(class='btn btn-primary btn-full btn-lg') }}
+    </form>
+
+    <p class="auth-footer-text">
+      Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
