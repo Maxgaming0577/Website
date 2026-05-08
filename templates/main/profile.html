@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+  <div class="profile-hero">
+    {% if current_user.discord_avatar %}
+      <img src="{{ current_user.discord_avatar }}" alt="avatar" class="profile-av">
+    {% else %}
+      <img src="{{ url_for('static', filename='uploads/' + current_user.avatar) }}"
+           alt="avatar" class="profile-av">
+    {% endif %}
+    <div class="profile-meta">
+      <h2>{{ current_user.username }}</h2>
+      <p>{{ current_user.email or 'No email set' }}</p>
+      <p>Level {{ current_user.level }} &bull; {{ current_user.points }} points</p>
+      <div class="chips-row">
+        {% if current_user.discord_id %}
+        <span class="discord-connected-chip">
+          <svg width="13" height="13" viewBox="0 0 71 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.7a40 40 0 0 0-1.8 3.7 16.9 16.9 0 0
+                     0-2.4-.2c-3.2 0-6.4.4-9.5 1.2A40.7 40.7 0 0 0 10.2 4.9C3.7 14.5.5 23.8.5
+                     32.9c0 .1 0 .2.1.3a58.7 58.7 0 0 0 17.8 9c1.4-1.9 2.7-4 3.8-6.2a38.3 38.3
+                     0 0 1-6-2.9l1.4-1.1a42 42 0 0 0 36.2 0l1.4 1.1a38.5 38.5 0 0 1-6
+                     2.9c1.1 2.2 2.4 4.3 3.8 6.2a58.6 58.6 0 0 0 17.8-9c.1-.1.1-.2.1-.3
+                     0-9.1-3.2-18.4-9.8-28ZM23.8 27.7c-2.9 0-5.3-2.7-5.3-6s2.3-6 5.3-6 5.4
+                     2.7 5.3 6-2.3 6-5.3 6Zm23.4 0c-2.9 0-5.3-2.7-5.3-6s2.3-6 5.3-6 5.4
+                     2.7 5.3 6-2.3 6-5.3 6Z" fill="#5865F2"/>
+          </svg>
+          Discord connected
+        </span>
+        {% endif %}
+        <span class="chip chip-{{ 'yes' if current_user.is_admin else 'no' }}">
+          {{ 'Admin' if current_user.is_admin else 'Member' }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="two-col">
+
+  <div class="card">
+    <p class="card-title"><i class="fa-solid fa-pen-to-square"></i> Edit Profile</p>
+    <form method="POST" enctype="multipart/form-data" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="field">
+        {{ form.username.label }}
+        {{ form.username(class='input') }}
+        {% for e in form.username.errors %}
+          <p class="field-error"><i class="fa-solid fa-circle-exclamation"></i> {{ e }}</p>
+        {% endfor %}
+      </div>
+      <div class="field">
+        {{ form.email.label }}
+        {{ form.email(class='input', placeholder='Optional') }}
+        {% for e in form.email.errors %}
+          <p class="field-error"><i class="fa-solid fa-circle-exclamation"></i> {{ e }}</p>
+        {% endfor %}
+      </div>
+      <div class="field">
+        {{ form.avatar.label }}
+        {{ form.avatar(class='file-input') }}
+        <p class="field-hint">JPG, PNG or GIF &bull; Max 2 MB</p>
+      </div>
+      {{ form.submit(class='btn btn-primary') }}
+    </form>
+
+    <hr class="rule">
+
+    {% if not current_user.discord_id %}
+    <p style="margin-bottom:0.6rem">
+      <a href="{{ url_for('main.change_password') }}" class="btn btn-ghost btn-sm">
+        <i class="fa-solid fa-key"></i> Change Password
+      </a>
+    </p>
+    <a href="{{ url_for('auth.discord_login') }}" class="btn-discord" style="margin-top:0.5rem">
+      <svg width="16" height="16" viewBox="0 0 71 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M60.1 4.9A58.5 58.5 0 0 0 45.6.7a40 40 0 0 0-1.8 3.7 16.9 16.9 0 0
+                 0-2.4-.2c-3.2 0-6.4.4-9.5 1.2A40.7 40.7 0 0 0 10.2 4.9C3.7 14.5.5 23.8.5
+                 32.9c0 .1 0 .2.1.3a58.7 58.7 0 0 0 17.8 9c1.4-1.9 2.7-4 3.8-6.2a38.3 38.3
+                 0 0 1-6-2.9l1.4-1.1a42 42 0 0 0 36.2 0l1.4 1.1a38.5 38.5 0 0 1-6
+                 2.9c1.1 2.2 2.4 4.3 3.8 6.2a58.6 58.6 0 0 0 17.8-9c.1-.1.1-.2.1-.3
+                 0-9.1-3.2-18.4-9.8-28ZM23.8 27.7c-2.9 0-5.3-2.7-5.3-6s2.3-6 5.3-6 5.4
+                 2.7 5.3 6-2.3 6-5.3 6Zm23.4 0c-2.9 0-5.3-2.7-5.3-6s2.3-6 5.3-6 5.4
+                 2.7 5.3 6-2.3 6-5.3 6Z" fill="#fff"/>
+      </svg>
+      Link Discord Account
+    </a>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <p class="card-title"><i class="fa-solid fa-medal"></i> Badges</p>
+    {% if current_user.badges %}
+    <div class="badges-wrap">
+      {% for ub in current_user.badges %}
+      <span class="badge-chip" title="{{ ub.badge.description }}">
+        <i class="fa-solid fa-{{ ub.badge.icon }}"></i>
+        {{ ub.badge.name }}
+      </span>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="fa-solid fa-medal"></i>
+      <p>No badges yet. Keep earning!</p>
+    </div>
+    {% endif %}
+
+    <hr class="rule">
+
+    <p class="card-title"><i class="fa-solid fa-flag"></i> Challenges</p>
+    {% if current_user.challenges %}
+    <ul class="ch-list">
+      {% for uc in current_user.challenges %}
+      <li class="ch-item">
+        <span class="ch-name">{{ uc.challenge.title }}</span>
+        <span class="chip chip-{{ 'completed' if uc.status == 'completed' else 'progress' }}">
+          {{ 'Completed' if uc.status == 'completed' else 'In Progress' }}
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-muted" style="padding:0.5rem 0">No challenges started yet.</p>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

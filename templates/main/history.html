@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <p class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Point History</p>
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Type</th>
+          <th>Points</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for tx in txs.items %}
+        <tr>
+          <td class="cell-muted">{{ tx.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td>{{ tx.description }}</td>
+          <td><span class="chip chip-{{ tx.tx_type }}">{{ tx.tx_type }}</span></td>
+          <td>
+            <span class="{{ 'pts-pos' if tx.points > 0 else 'pts-neg' }} fw-700">
+              {{ '+' if tx.points > 0 else '' }}{{ tx.points }}
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    {% if txs.has_prev %}
+    <a href="{{ url_for('main.history', page=txs.prev_num) }}"
+       class="btn btn-ghost btn-sm">Previous</a>
+    {% endif %}
+    <span class="page-info">Page {{ txs.page }} of {{ txs.pages }}</span>
+    {% if txs.has_next %}
+    <a href="{{ url_for('main.history', page=txs.next_num) }}"
+       class="btn btn-ghost btn-sm">Next</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

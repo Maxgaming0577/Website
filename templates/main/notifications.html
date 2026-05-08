@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <p class="card-title"><i class="fa-solid fa-bell"></i> Notifications</p>
+  {% if notes %}
+  <ul class="notif-list">
+    {% for n in notes %}
+    <li class="notif-item">
+      <div class="notif-left">
+        <div class="notif-icon-wrap"><i class="fa-solid fa-circle-info"></i></div>
+        <span class="notif-msg">{{ n.message }}</span>
+      </div>
+      <span class="notif-time">{{ n.created_at.strftime('%b %d, %H:%M') }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="empty-state">
+    <i class="fa-solid fa-bell-slash"></i>
+    <p>No notifications yet.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

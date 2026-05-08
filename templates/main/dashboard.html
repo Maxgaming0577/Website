@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-card-icon ic-blue"><i class="fa-solid fa-star"></i></div>
+    <div>
+      <p class="stat-label">Total Points</p>
+      <p class="stat-value" data-val="{{ current_user.points }}">{{ current_user.points }}</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-icon ic-purple"><i class="fa-solid fa-layer-group"></i></div>
+    <div>
+      <p class="stat-label">Level</p>
+      <p class="stat-value" data-val="{{ current_user.level }}">{{ current_user.level }}</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-icon ic-yellow"><i class="fa-solid fa-medal"></i></div>
+    <div>
+      <p class="stat-label">Badges</p>
+      <p class="stat-value" data-val="{{ current_user.badges|length }}">{{ current_user.badges|length }}</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-icon ic-green"><i class="fa-solid fa-gift"></i></div>
+    <div>
+      <p class="stat-label">Redemptions</p>
+      <p class="stat-value" data-val="{{ current_user.redemptions|length }}">{{ current_user.redemptions|length }}</p>
+    </div>
+  </div>
+</div>
+
+<!-- Level progress -->
+<div class="card">
+  <p class="card-title"><i class="fa-solid fa-chart-line"></i> Level Progress</p>
+  {% set prog = ((current_user.points % 500) / 500 * 100) | int %}
+  <div class="prog-track">
+    <div class="prog-fill" data-width="{{ prog }}" style="width:0"></div>
+  </div>
+  <p class="prog-text">
+    {{ current_user.points % 500 }} / 500 pts to Level {{ current_user.level + 1 }}
+    &nbsp;&mdash;&nbsp; {{ prog }}%
+  </p>
+</div>
+
+<div class="two-col">
+
+  <!-- Recent activity -->
+  <div class="card">
+    <p class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Recent Activity</p>
+    {% if transactions %}
+    <ul class="activity-list">
+      {% for tx in transactions %}
+      <li class="activity-item">
+        <span class="activity-dot dot-{{ tx.tx_type }}"></span>
+        <span class="activity-desc">{{ tx.description }}</span>
+        <span class="pts-pill pts-{{ tx.tx_type }}">
+          {{ '+' if tx.points > 0 else '' }}{{ tx.points }}
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+    <div class="mt-1">
+      <a href="{{ url_for('main.history') }}" class="btn btn-ghost btn-sm">
+        View all history
+      </a>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="fa-solid fa-inbox"></i>
+      <p>No activity yet. Start earning points!</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Mini leaderboard -->
+  <div class="card">
+    <p class="card-title"><i class="fa-solid fa-trophy"></i> Top Leaders</p>
+    <ul class="leader-list">
+      {% for u in leaderboard %}
+      <li class="leader-item {% if u.id == current_user.id %}is-me{% endif %}">
+        <span class="leader-rank">
+          {% if loop.index == 1 %}&#127945;
+          {% elif loop.index == 2 %}&#129352;
+          {% elif loop.index == 3 %}&#129353;
+          {% else %}{{ loop.index }}{% endif %}
+        </span>
+        {% if u.discord_avatar %}
+          <img src="{{ u.discord_avatar }}" alt="av" class="leader-av">
+        {% else %}
+          <img src="{{ url_for('static', filename='uploads/' + u.avatar) }}" alt="av" class="leader-av">
+        {% endif %}
+        <span class="leader-name">
+          {{ u.username }}
+          {% if u.id == current_user.id %}<span class="you-tag">You</span>{% endif %}
+        </span>
+        <span class="leader-pts">{{ u.points }} pts</span>
+      </li>
+      {% endfor %}
+    </ul>
+    <div class="mt-1">
+      <a href="{{ url_for('main.leaderboard') }}" class="btn btn-ghost btn-sm">
+        Full leaderboard
+      </a>
+    </div>
+  </div>
+
+</div>
+
+{% if current_user.badges %}
+<div class="card">
+  <p class="card-title"><i class="fa-solid fa-medal"></i> My Badges</p>
+  <div class="badges-wrap">
+    {% for ub in current_user.badges %}
+    <span class="badge-chip" title="{{ ub.badge.description }}">
+      <i class="fa-solid fa-{{ ub.badge.icon }}"></i>
+      {{ ub.badge.name }}
+    </span>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <p class="card-title"><i class="fa-solid fa-trophy"></i> Global Leaderboard</p>
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>User</th>
+          <th>Level</th>
+          <th>Points</th>
+          <th>Badges</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in leaders %}
+        <tr class="{% if u.id == current_user.id %}tbl-me{% endif %}">
+          <td>
+            {% if loop.index == 1 %}&#127945;
+            {% elif loop.index == 2 %}&#129352;
+            {% elif loop.index == 3 %}&#129353;
+            {% else %}<span style="color:var(--text-muted)">{{ loop.index }}</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if u.discord_avatar %}
+              <img src="{{ u.discord_avatar }}" class="tbl-av" alt="av">
+            {% else %}
+              <img src="{{ url_for('static', filename='uploads/' + u.avatar) }}"
+                   class="tbl-av" alt="av">
+            {% endif %}
+            {{ u.username }}
+            {% if u.id == current_user.id %}
+              <span class="you-tag">You</span>
+            {% endif %}
+          </td>
+          <td>{{ u.level }}</td>
+          <td class="fw-700">{{ u.points }}</td>
+          <td>{{ u.badges | length }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
