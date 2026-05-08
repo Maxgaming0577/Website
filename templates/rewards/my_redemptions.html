@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <p class="card-title"><i class="fa-solid fa-box-open"></i> My Redemptions</p>
+  {% if redemptions.items %}
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Reward</th>
+          <th>Cost</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in redemptions.items %}
+        <tr>
+          <td>{{ r.reward_obj.name }}</td>
+          <td>{{ r.reward_obj.points_cost }} pts</td>
+          <td><span class="chip chip-{{ r.status }}">{{ r.status }}</span></td>
+          <td class="cell-muted">{{ r.created_at.strftime('%Y-%m-%d') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    {% if redemptions.has_prev %}
+    <a href="{{ url_for('rewards.my_redemptions', page=redemptions.prev_num) }}"
+       class="btn btn-ghost btn-sm">Previous</a>
+    {% endif %}
+    <span class="page-info">Page {{ redemptions.page }} / {{ redemptions.pages }}</span>
+    {% if redemptions.has_next %}
+    <a href="{{ url_for('rewards.my_redemptions', page=redemptions.next_num) }}"
+       class="btn btn-ghost btn-sm">Next</a>
+    {% endif %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <i class="fa-solid fa-box-open"></i>
+    <p>You have not redeemed anything yet.
+       <a href="{{ url_for('rewards.list_rewards') }}">Visit the store!</a>
+    </p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
