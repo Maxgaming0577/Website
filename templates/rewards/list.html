@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-hdr">
+  <h2><i class="fa-solid fa-gift"></i> Rewards Store</h2>
+  <span class="pts-badge">
+    <i class="fa-solid fa-star"></i> {{ current_user.points }} points
+  </span>
+</div>
+
+{% if rewards %}
+<div class="rewards-grid">
+  {% for r in rewards %}
+  <div class="reward-card {% if current_user.points < r.points_cost %}reward-locked{% endif %}">
+    <div class="reward-img-area">
+      <img src="{{ url_for('static', filename='uploads/' + r.image) }}"
+           alt="{{ r.name }}" class="reward-img">
+      {% if r.stock == 0 %}
+        <div class="sold-out-layer">Out of Stock</div>
+      {% elif r.stock != -1 %}
+        <span class="stock-tag">{{ r.stock }} left</span>
+      {% endif %}
+    </div>
+    <div class="reward-body">
+      <p class="reward-name">{{ r.name }}</p>
+      <p class="reward-desc">{{ r.description }}</p>
+      <div class="reward-footer">
+        <span class="reward-cost">
+          <i class="fa-solid fa-star"></i> {{ r.points_cost }}
+        </span>
+        {% if current_user.points >= r.points_cost and r.stock != 0 %}
+        <form method="POST" action="{{ url_for('rewards.redeem', reward_id=r.id) }}"
+              onsubmit="return confirm('Redeem {{ r.name }} for {{ r.points_cost }} points?')">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-primary btn-sm">Redeem</button>
+        </form>
+        {% else %}
+        <button class="btn btn-disabled btn-sm" disabled>
+          {% if r.stock == 0 %}Sold Out{% else %}Need More Pts{% endif %}
+        </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <i class="fa-solid fa-gift"></i>
+  <p>No rewards available right now. Check back soon!</p>
+</div>
+{% endif %}
+
+<a href="{{ url_for('rewards.my_redemptions') }}" class="btn btn-ghost">
+  <i class="fa-solid fa-box-open"></i> My Redemptions
+</a>
+{% endblock %}
