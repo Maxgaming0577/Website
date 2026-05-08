@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-box">
+    <h1 class="auth-heading">{{ title }}</h1>
+    <form method="POST" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="field">{{ form.title.label }}{{ form.title(class='input') }}</div>
+      <div class="field">{{ form.description.label }}{{ form.description(class='input') }}</div>
+      <div class="field">{{ form.points_value.label }}{{ form.points_value(class='input') }}</div>
+      <label class="check-wrap" style="margin-bottom:1rem">
+        {{ form.is_active() }} Active
+      </label>
+      {{ form.submit(class='btn btn-primary btn-full') }}
+    </form>
+    <p class="auth-footer-text">
+      <a href="{{ url_for('admin.challenges') }}">
+        <i class="fa-solid fa-arrow-left"></i> Back to Challenges
+      </a>
+    </p>
+  </div>
+</div>
+{% endblock %}

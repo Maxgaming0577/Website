@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+
+<p class="page-title"><i class="fa-solid fa-gears"></i> Admin Dashboard</p>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-card-icon ic-blue"><i class="fa-solid fa-users"></i></div>
+    <div>
+      <p class="stat-label">Users</p>
+      <p class="stat-value" data-val="{{ total_users }}">{{ total_users }}</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-icon ic-green"><i class="fa-solid fa-gift"></i></div>
+    <div>
+      <p class="stat-label">Rewards</p>
+      <p class="stat-value" data-val="{{ total_rewards }}">{{ total_rewards }}</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-icon ic-yellow"><i class="fa-solid fa-hourglass-half"></i></div>
+    <div>
+      <p class="stat-label">Pending</p>
+      <p class="stat-value" data-val="{{ pending }}">{{ pending }}</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-icon ic-purple"><i class="fa-solid fa-receipt"></i></div>
+    <div>
+      <p class="stat-label">Transactions</p>
+      <p class="stat-value" data-val="{{ total_txs }}">{{ total_txs }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="admin-grid">
+  <a href="{{ url_for('admin.users') }}"             class="admin-card">
+    <i class="fa-solid fa-users"></i> Manage Users
+  </a>
+  <a href="{{ url_for('admin.rewards') }}"           class="admin-card">
+    <i class="fa-solid fa-gift"></i> Manage Rewards
+  </a>
+  <a href="{{ url_for('admin.redemptions') }}"       class="admin-card">
+    <i class="fa-solid fa-box-open"></i> Redemptions
+  </a>
+  <a href="{{ url_for('admin.challenges') }}"        class="admin-card">
+    <i class="fa-solid fa-flag"></i> Challenges
+  </a>
+  <a href="{{ url_for('admin.award_points_view') }}" class="admin-card">
+    <i class="fa-solid fa-star"></i> Award Points
+  </a>
+</div>
+
+<div class="card">
+  <p class="card-title"><i class="fa-solid fa-receipt"></i> Recent Transactions</p>
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead>
+        <tr><th>User</th><th>Description</th><th>Points</th><th>Type</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        {% for tx in recent_txs %}
+        <tr>
+          <td>{{ tx.user.username }}</td>
+          <td>{{ tx.description }}</td>
+          <td>
+            <span class="{{ 'pts-pos' if tx.points > 0 else 'pts-neg' }} fw-700">
+              {{ '+' if tx.points > 0 else '' }}{{ tx.points }}
+            </span>
+          </td>
+          <td><span class="chip chip-{{ tx.tx_type }}">{{ tx.tx_type }}</span></td>
+          <td class="cell-muted">{{ tx.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

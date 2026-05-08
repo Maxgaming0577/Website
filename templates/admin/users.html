@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="page-hdr">
+    <h2><i class="fa-solid fa-users"></i> Users</h2>
+    <form method="GET" class="search-row">
+      <input type="text" name="q" value="{{ q }}"
+             placeholder="Search username / email" class="input">
+      <button type="submit" class="btn btn-primary btn-sm">Search</button>
+    </form>
+  </div>
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>ID</th><th>Username</th><th>Email</th>
+          <th>Points</th><th>Level</th><th>Discord</th><th>Admin</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td class="cell-muted">{{ u.id }}</td>
+          <td>{{ u.username }}</td>
+          <td class="cell-muted">{{ u.email or '—' }}</td>
+          <td class="fw-700">{{ u.points }}</td>
+          <td>{{ u.level }}</td>
+          <td>
+            {% if u.discord_id %}
+            <span class="chip chip-discord">Discord</span>
+            {% else %}<span class="cell-muted">—</span>{% endif %}
+          </td>
+          <td>
+            <span class="chip {{ 'chip-yes' if u.is_admin else 'chip-no' }}">
+              {{ 'Admin' if u.is_admin else 'Member' }}
+            </span>
+          </td>
+          <td class="cell-actions">
+            <form method="POST" action="{{ url_for('admin.toggle_admin', user_id=u.id) }}"
+                  style="display:inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-ghost btn-sm">Toggle Admin</button>
+            </form>
+            <form method="POST" action="{{ url_for('admin.delete_user', user_id=u.id) }}"
+                  style="display:inline"
+                  onsubmit="return confirm('Delete {{ u.username }}?')">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

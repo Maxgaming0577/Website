@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-box auth-box-wide">
+    <h1 class="auth-heading">{{ title }}</h1>
+    <form method="POST" enctype="multipart/form-data" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="field">{{ form.name.label }}{{ form.name(class='input') }}</div>
+      <div class="field">{{ form.description.label }}{{ form.description(class='input') }}</div>
+      <div class="field">{{ form.points_cost.label }}{{ form.points_cost(class='input') }}</div>
+      <div class="field">
+        {{ form.stock.label }}{{ form.stock(class='input') }}
+        <p class="field-hint">Use -1 for unlimited stock.</p>
+      </div>
+      <div class="field">{{ form.image.label }}{{ form.image(class='file-input') }}</div>
+      <label class="check-wrap" style="margin-bottom:1rem">
+        {{ form.is_active() }} Active
+      </label>
+      {{ form.submit(class='btn btn-primary btn-full') }}
+    </form>
+    <p class="auth-footer-text">
+      <a href="{{ url_for('admin.rewards') }}">
+        <i class="fa-solid fa-arrow-left"></i> Back to Rewards
+      </a>
+    </p>
+  </div>
+</div>
+{% endblock %}

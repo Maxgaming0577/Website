@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div class="page-hdr">
+    <h2><i class="fa-solid fa-flag"></i> Challenges</h2>
+    <a href="{{ url_for('admin.new_challenge') }}" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-plus"></i> New Challenge
+    </a>
+  </div>
+  <div class="table-wrap">
+    <table class="tbl">
+      <thead>
+        <tr><th>Title</th><th>Points</th><th>Active</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for c in challenges %}
+        <tr>
+          <td>{{ c.title }}</td>
+          <td>{{ c.points_value }}</td>
+          <td>
+            <span class="chip {{ 'chip-yes' if c.is_active else 'chip-no' }}">
+              {{ 'Active' if c.is_active else 'Inactive' }}
+            </span>
+          </td>
+          <td class="cell-actions">
+            <a href="{{ url_for('admin.edit_challenge', cid=c.id) }}"
+               class="btn btn-ghost btn-sm">Edit</a>
+            <form method="POST" action="{{ url_for('admin.delete_challenge', cid=c.id) }}"
+                  style="display:inline"
+                  onsubmit="return confirm('Delete this challenge?')">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
